@@ -1,0 +1,1 @@
+{"algo": "IVFFlatIndex", "metric": "l2", "N": 60000, "D": 784, "nlist": 100, "nprobe": 8}
