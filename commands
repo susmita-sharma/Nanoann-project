@@ -1,0 +1,55 @@
+#BRUTEFORCE
+# Build
+python -m nanoann.cli build \
+  --algo brute \
+  --metric l2 \
+  --data data/train.npy \
+  --ids data/train_ids.npy \
+  --out indexes/brute_mnist
+
+# Search
+python -m nanoann.cli search \
+  --index indexes/brute_mnist \
+  --queries data/query.npy \
+  --k 10 \
+  --out runs/brute.json
+
+# Evaluate
+python -m nanoann.cli eval \
+  --truth runs/groundtruth.json \
+  --run runs/brute.json \
+  --index indexes/brute_mnist \
+  --report results/brute.json
+
+
+  #ivf 
+
+for nprobe in 1 4 16 32; do
+  python -m nanoann.cli build \
+    --algo ivf \
+    --metric l2 \
+    --data data/train.npy \
+    --ids data/train_ids.npy \
+    --out indexes/ivf_mnist_nprobe_${nprobe} \
+    --nlist 256 \
+    --nprobe ${nprobe}
+  python -m nanoann.cli search \
+    --index indexes/ivf_mnist_nprobe_${nprobe} \
+    --queries data/query.npy \
+    --k 10 \
+    --out runs/ivf_nprobe_${nprobe}.json
+  python -m nanoann.cli eval \
+    --truth runs/groundtruth.json \
+    --run runs/ivf_nprobe_${nprobe}.json \
+    --index indexes/ivf_mnist_nprobe_${nprobe} \
+    --report results/ivf_nprobe_${nprobe}.json
+done
+
+
+#HNSW
+
+for ef in 10 50 100; do
+    python -m nanoann.cli build --algo hnsw --metric l2 --data data/train.npy --ids data/train_ids.npy --out indexes/hnsw_mnist_ef_${ef} --M 16 --ef_construction 200 --ef ${ef}
+    python -m nanoann.cli search --index indexes/hnsw_mnist_ef_${ef} --queries data/query.npy --k 10 --out runs/hnsw_ef_${ef}.json
+    python -m nanoann.cli eval --truth runs/groundtruth.json --run runs/hnsw_ef_${ef}.json --index indexes/hnsw_mnist_ef_${ef} --report results/hnsw_ef_${ef}.json
+done
