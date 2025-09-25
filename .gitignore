@@ -3,7 +3,6 @@
 # data/*.hdf5
 # indexes/**/hnsw.bin
 # Ignore large data files
-idx_brute/
 data/
 
 # Ignore Python cache and virtualenv
