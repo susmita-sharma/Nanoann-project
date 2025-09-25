@@ -11,10 +11,7 @@ data/
 *.pyc
 *.pyo
 *.pyd
-.venv/
 venv/
 nanoann/__pycache__
-# Ignore results and runs
-runs/
-results/
+
 
